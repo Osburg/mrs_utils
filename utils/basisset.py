@@ -135,10 +135,68 @@ class Basisset():
 
         return cls(fids, metabolite_names, conjugate_basis, dwelltime)
 
+    # TODO: test
+    def to_npz(self, path: str) -> None:
+        np.savez(path, data=self.fids, metabolite_names=self.metabolite_names)
+
+    # TODO: test
+    def to_matlab(self, path: str) -> None:
+        dict = {
+            "__header__": b"MAT-file",
+            "__version__": "1.0",
+            "__globals__": [],
+            "data": self.fids.T, 
+            "metabolite_names": self.metabolite_names
+        }
+        sio.savemat(path, dict)
+
     def normalize(self):
         """Normalizes the basis set."""
         NotImplementedError
 
+    # TODO: test
+    def by_key(self, key: str, which: str = "fids") -> np.ndarray:
+        """Returns the data corresponding to the key.
+        
+        Args:
+            key (str): The metabolite name.
+            which (str): Optional. The data to be returned. Either "fids" or "spectra".
+                Defaults to "fids".
+
+        Returns:
+            np.ndarray: The FID signal/spectrum corresponding to the key.
+        """
+        
+        if key not in self.metabolite_names:
+            raise ValueError("The key does not exist in the metabolite names.")
+        idx = self.metabolite_names.index(key)
+        if which == "fids":
+            return self.fids[:,idx]
+        elif which == "spectra":
+            return self.spectra[:,idx]
+        else:
+            raise ValueError("The data type should be either 'fids' or 'spectra'.")
+
+    # TODO: test
+    def by_index(self, idx: int, which: str = "fids") -> np.ndarray:
+        """Returns the data corresponding to the index.
+        
+        Args:
+            idx (int): The index of the metabolite.
+            which (str): Optional. The data to be returned. Either "fids" or "spectra".
+                Defaults to "fids".
+
+        Returns:
+            np.ndarray: The FID signal/spectrum corresponding to the index.
+        """
+        if idx >= len(self.metabolite_names):
+            raise ValueError("The index is out of range.")
+        if which == "fids":
+            return self.fids[:,idx]
+        elif which == "spectra":
+            return self.spectra[:,idx]
+        else:
+            raise ValueError("The data type should be either 'fids' or 'spectra'.")
 
 def io_readlcmraw(filename: str) -> dict:
     """
