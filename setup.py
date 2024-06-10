@@ -13,6 +13,8 @@ setup(
         'numpy',
         'scipy',
         'matplotlib',
+        'torch',
+        'torchvision'
         ],
     extras_require={
         "tests": ["pytest"],

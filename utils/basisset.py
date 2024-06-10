@@ -12,7 +12,7 @@ class Basisset():
                  fids: np.ndarray, 
                  metabolite_names: List[str], 
                  conjugate_basis: bool = False, 
-                 dwelltime: float = None
+                 dwelltime: float = None,
                 ) -> None:
         """Initializes the Basisset object.
 
