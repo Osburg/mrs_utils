@@ -63,20 +63,18 @@ class Axis:
                 warnings.warn("The value is outside the covered ppm interval. The closest value will be used.")
             return np.argmin(np.abs(self._ppm - value))
 
-    # TODO: test this function
-    def frequency_to_ppm(self, frequency: float, frequency_shift: bool = False) -> float:
+    def frequency_to_ppm(self, frequency: float, frequency_shift: bool = True) -> float:
         """ Convert a frequency value to ppm.
 
         Args:
-            frequency (float): frequency (shift) value in Hz.
-            frequency_shift (bool): Optional. If True, the frequency value is a frequency shift. Default is False.
+            frequency (float): frequency / frequency shift value in MHz / Hz.
+            frequency_shift (bool): Optional. If True, the frequency value is a frequency shift. Default is True.
         """
         if frequency_shift:
             return frequency / self._f0
         else:
-            return (frequency * 1e6 - self._f0) / self._f0 + self.cs0
+            return (frequency - self._f0) / self._f0 * 1e6 + self.cs0
 
-    # TODO: test this function
     def ppm_to_frequency(self, ppm: float, frequency_shift: bool = True) -> float:
         """ Convert a ppm value to frequency.
 
@@ -88,7 +86,7 @@ class Axis:
         if frequency_shift:
             return ppm * self._f0
         else:
-            return ((ppm - self.cs0) * self._f0 + self._f0) * 1e-6
+            return (ppm - self.cs0) * self._f0 * 1e-6 + self._f0
 
     @classmethod
     def from_time_axis(cls, time: np.ndarray, b0: Optional[float] = 3.) -> Self:
