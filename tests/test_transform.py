@@ -37,7 +37,7 @@ def test_inverse_fourier_transform():
     s = (10 * np.cos(2 * np.pi * 5 * t) + 5 * np.cos(2 * np.pi * 40 * t)) * np.exp(
         -np.pi * t**2
     )
-    f = fftshift(fft(s, norm="ortho"))
+    f = fftshift(fft(s))
     s_rec = InverseFourierTransform()(f)
 
     assert np.allclose(s_rec, s, atol=1e-5)
@@ -47,8 +47,8 @@ def test_one_hot_transform():
     n_classes = 10
     ohe = OneHotEncodingTransform(n_classes)
 
-    for x in torch.tensor([0, 5, 2, 2, 1, 7, 3, 6, 8, 9]):
-        y = ohe(x)
+    for x in torch.tensor([0, 5, 2, 2, 1, 7, 3, 6, 8, 9]).unsqueeze(dim=1):
+        y = ohe(x.unsqueeze(0))
         assert torch.all(y.sum() == 1)
         assert torch.all(y.argmax() == x)
 

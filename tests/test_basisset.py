@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from mrs_utils.basisset import Basisset, io_readlcmraw_basis
+from mrs_utils.basisset import Basisset, io_readlcmraw_basis, io_readlcmraw
 
 filepath = os.path.dirname(os.path.abspath(__file__)) + "/data/"
 
@@ -17,13 +17,13 @@ def test_io_readlcmraw_basis():
 
 
 def test_io_readlcmraw():
-    out = io_readlcmraw_basis(filepath + "Ala.RAW")
+    out = io_readlcmraw(filepath + "Ala.RAW")
 
-    assert out.keys() == ["Ala"]
-    assert len(out["Ala"]) == 65458
+    assert list(out.keys()) == ["Ala_1.300000"]
+    assert len(out["Ala_1.300000"]) == 65458 / 2
 
 
-def test_Basisset_basic():
+def test_basisset_basic():
     # correct usage
     fids = np.array([[0, 1, 2, 3], [0, 1, 2, 3], [0, 1, 2, 3]])
     names = ["m1", "m2", "m3", "m4"]

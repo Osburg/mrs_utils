@@ -13,7 +13,7 @@ setup(
         "numpy",
         "scipy",
         "matplotlib",
-        "torch",
+        "torch==2.3.1",
         "torchvision",
         "overrides",
     ],
