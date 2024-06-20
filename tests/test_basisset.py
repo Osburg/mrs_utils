@@ -3,7 +3,7 @@ import os
 import numpy as np
 import pytest
 
-from mrs_utils.basisset import Basisset, io_readlcmraw_basis, io_readlcmraw
+from mrs_utils.basisset import Basisset, io_readlcmraw, io_readlcmraw_basis
 
 filepath = os.path.dirname(os.path.abspath(__file__)) + "/data/"
 
