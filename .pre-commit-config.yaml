@@ -22,6 +22,6 @@ repos:
         language: python
         types: [python]
         require_serial: true
-        args: ['--max-line-length=88', "--ignore=E203,W503,E722"]
+        args: ['--max-line-length=120', "--ignore=E203,W503,E722"]
 
 exclude: 'README.md'

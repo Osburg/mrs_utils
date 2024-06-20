@@ -1,8 +1,10 @@
+from abc import ABC, abstractmethod
+
+import numpy as np
 import torch
 from torch import Tensor
 from torch.fft import fft, fftshift, ifft, ifftshift
-import numpy as np
-from abc import ABC, abstractmethod
+
 
 class Transform(ABC):
     """Base class for all transforms. Must implement a __call__ method."""
@@ -15,7 +17,6 @@ class Transform(ABC):
         return NotImplemented
 
 
-
 class FourierTransform(Transform):
 
     def __init__(self) -> None:
@@ -24,6 +25,7 @@ class FourierTransform(Transform):
     def __call__(self, x: Tensor) -> Tensor:
         """FFT of an input signal x"""
         return fftshift(fft(x))
+
 
 class InverseFourierTransform(Transform):
     """Inverse FFT of an input signal x"""
@@ -34,26 +36,32 @@ class InverseFourierTransform(Transform):
     def __call__(self, x: Tensor) -> Tensor:
         return ifft(ifftshift(x))
 
+
 class OneHotEncodingTransform(Transform):
     def __init__(self, n_classes: int) -> None:
         self.n_classes = n_classes
-        
+
     def __call__(self, x: Tensor) -> Tensor:
         for x_ in x.flatten():
             if x_ not in range(self.n_classes):
-                raise ValueError(f"Class {x_} is not in the range [0, {self.n_classes})")
-        return torch.zeros((x.shape[0], self.n_classes), dtype=torch.float).scatter_(-1, index=torch.tensor(x), value=1)
+                raise ValueError(
+                    f"Class {x_} is not in the range [0, {self.n_classes})"
+                )
+        return torch.zeros((x.shape[0], self.n_classes), dtype=torch.float).scatter_(
+            -1, index=torch.tensor(x), value=1
+        )
+
 
 class AugmentationTransform(Transform):
 
     def __init__(
-            self,
-            frequency_shift: float,
-            phase_shift: float,
-            damping: float,
-            noise_level: float,
-            time: Tensor,
-            domain: str = "time"
+        self,
+        frequency_shift: float,
+        phase_shift: float,
+        damping: float,
+        noise_level: float,
+        time: Tensor,
+        domain: str = "time",
     ) -> None:
         """Class that applied a random frequency shift, phase shift, damping and noise addition to an input signal.
 
@@ -77,8 +85,12 @@ class AugmentationTransform(Transform):
         self.domain = domain
 
     def __call__(self, x: Tensor) -> Tensor:
-        frequency_shift = self.frequency_shift * (torch.rand(x.shape[0]) - 0.5).unsqueeze(1)
-        phase_shift = self.phase_shift * np.pi * (torch.rand(x.shape[0]) - 0.5).unsqueeze(1)
+        frequency_shift = self.frequency_shift * (
+            torch.rand(x.shape[0]) - 0.5
+        ).unsqueeze(1)
+        phase_shift = (
+            self.phase_shift * np.pi * (torch.rand(x.shape[0]) - 0.5).unsqueeze(1)
+        )
         damping = self.damping * torch.rand(x.shape[0]).unsqueeze(1)
 
         if self.domain == "frequency":
@@ -92,6 +104,7 @@ class AugmentationTransform(Transform):
             x = fftshift(fft(x, dim=-1), dim=-1)
 
         return x
+
 
 class IdentityTransform(Transform):
     def __init__(self) -> None:

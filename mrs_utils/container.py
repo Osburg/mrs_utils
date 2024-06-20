@@ -1,20 +1,19 @@
 import numpy as np
 import scipy.io as sio
-from torch.utils.data import Dataset, TensorDataset
-from typing_extensions import Self
-from torchvision.transforms import ToTensor
-from torch import from_numpy, Tensor
-from typing import List
 from overrides import override
+from torch import Tensor, from_numpy
+from torch.utils.data import TensorDataset
+from typing_extensions import Self
+
 
 class MRSContainer(TensorDataset):
     """Class to store mrs(i) data"""
 
     def __init__(self, data: np.ndarray, **kwargs) -> None:
         """Initializes the Container object which inherits from the Dataset class
-        
+
         Args:
-            data (np.ndarray): The data to be stored in the container. 
+            data (np.ndarray): The data to be stored in the container.
                 The samples should be stored along the first dimension.
             **kwargs: Additional keyword arguments to be stored in the container
                 device (str): The device to store the data on. Default is "cpu"
@@ -22,9 +21,9 @@ class MRSContainer(TensorDataset):
                 reference_frequency (float): The reference frequency of the data. Default is None
                 transform (callable): The transform to be applied to the data. Default is lambda x: x.
                 This can for example be used to include an augmentation step.
-        
+
         """
-        
+
         if "device" in kwargs:
             self.device = kwargs.get("device")
         else:
@@ -34,7 +33,7 @@ class MRSContainer(TensorDataset):
             self.dwelltime = kwargs.get("dwelltime")
         else:
             self.dwelltime = None
-        
+
         if "reference_frequency" in kwargs:
             self.reference_frequency = kwargs.get("reference_frequency")
         else:
@@ -55,9 +54,9 @@ class MRSContainer(TensorDataset):
 
     @classmethod
     def from_matlab(cls, path: str, **kwargs) -> Self:
-        data = sio.loadmat(path).get('data').T
+        data = sio.loadmat(path).get("data").T
         return cls(data, **kwargs)
-    
+
     @classmethod
     def from_npz(cls, path: str, **kwargs) -> Self:
         data = np.load(path)
@@ -69,7 +68,6 @@ class MRSContainer(TensorDataset):
     def from_npy(cls, path: str, **kwargs) -> Self:
         data = np.load(path)
         return cls(data, **kwargs)
-
 
     # TODO: test
     def to_npy(self, path: str) -> None:
@@ -84,7 +82,7 @@ class MRSContainer(TensorDataset):
             "__version__": "1.0",
             "__globals__": [],
             "data": self.tensors[0].detach().cpu().numpy().T,
-            }
+        }
         sio.savemat(path, dict)
 
     # TODO: implement, test
