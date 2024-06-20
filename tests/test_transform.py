@@ -1,5 +1,5 @@
 #%%
-from utils.transform import FourierTransform, InverseFourierTransform, OneHotEncodingTransform
+from mrs_utils.transform import *
 import torch
 import numpy as np
 from scipy.signal import find_peaks
@@ -32,9 +32,40 @@ def test_inverse_fourier_transform():
 def test_one_hot_transform():
     n_classes = 10
     ohe = OneHotEncodingTransform(n_classes)
-    x = torch.tensor([0,1,2,3,4,5,6,7,8,9])
-    
+
     for x in torch.tensor([0,5,2,2,1,7,3,6,8,9]):
         y = ohe(x)
         assert torch.all(y.sum() == 1)
         assert torch.all(y.argmax() == x)
+
+def test_one_hot_transform_batch():
+    n_classes = 10
+    ohe = OneHotEncodingTransform(n_classes)
+    x = torch.tensor([0,5,2,2,1,7,3,6,8,9]).unsqueeze(dim=1)
+    y = ohe(x)
+    assert np.allclose(y.sum(dim=1), torch.ones(10))
+    assert np.allclose(y.argmax(dim=1), x.squeeze())
+
+def test_augmentation_transform():
+    trafo = AugmentationTransform(
+        frequency_shift=0.1,
+        phase_shift=0.1/np.pi,
+        damping=0.1,
+        noise_level=0.1,
+        time=torch.linspace(1,11,10),
+        domain="time"
+    )
+
+    x = torch.tensor([0,5,2,2,1,7,3,6,8,9], dtype=torch.complex64)
+    x = x.repeat(10,1)
+    x_ = trafo(x)
+
+    assert x_.shape == x.shape
+
+    x_ = trafo(x[0,:].unsqueeze(0))
+    trafo.domain = "frequency"
+    trafo.frequency_shift = 0.
+    trafo.phase_shift = 0.
+    trafo.damping = 0.
+    trafo.noise_level = 0.
+    x_ = trafo(x[0,:].unsqueeze(0))

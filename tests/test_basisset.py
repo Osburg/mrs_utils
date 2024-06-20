@@ -1,5 +1,5 @@
 import numpy as np
-from utils.basisset import *
+from mrs_utils.basisset import *
 import os
 import pytest
 

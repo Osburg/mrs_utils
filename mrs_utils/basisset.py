@@ -145,7 +145,7 @@ class Basisset():
             "__header__": b"MAT-file",
             "__version__": "1.0",
             "__globals__": [],
-            "data": self.fids.T, 
+            "data": self.fids,
             "metabolite_names": self.metabolite_names
         }
         sio.savemat(path, dict)

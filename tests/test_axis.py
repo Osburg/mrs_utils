@@ -1,8 +1,8 @@
 import numpy as np
 import pytest
 
-from utils.axis import Axis
-from utils.constants import *
+from mrs_utils.axis import Axis
+from mrs_utils.constants import *
 
 # Amir's conversion functions
 def ppm2p(f0, dt, r, len):

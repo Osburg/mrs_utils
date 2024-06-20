@@ -1,4 +1,4 @@
-from utils.container import MRSContainer
+from mrs_utils.container import MRSContainer
 import numpy as np
 import os
 
@@ -8,16 +8,16 @@ def test_container():
     container = MRSContainer(
         data=np.array([[1,2,3,4]]),
         device="cpu",
-        dwell_time=1,
+        dwelltime=1,
         reference_frequency=1,
         transform=lambda x: x
     )
     assert len(container) == 1
-    assert np.allclose(container[0].detach().cpu().numpy(), np.array([1,2,3,4]))
+    assert np.allclose(container[0][0].detach().cpu().numpy(), np.array([1,2,3,4]))
     assert container.device == "cpu"
-    assert container.dwell_time == 1
+    assert container.dwelltime == 1
     assert container.reference_frequency == 1
-    assert np.allclose(container.transform(container[0]), container[0])
+    assert np.allclose(container.transform(container[0][0]), container[0])
 
     # test reading and writing containers from/to matlab
     container = MRSContainer.from_matlab(

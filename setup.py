@@ -1,10 +1,10 @@
 from setuptools import setup
 
 setup(
-    name='utils',
+    name='mrs_utils',
     version='0.1',
-    packages=['utils','tests'],
-    url='gttps://github.com/Osburg/utils',
+    packages=['mrs_utils','tests'],
+    url='https://github.com/Osburg/mrs_utils',
     license='',
     author='Aaron Osburg',
     author_email='osburg@stud.uni-heidelberg.de',
@@ -14,7 +14,8 @@ setup(
         'scipy',
         'matplotlib',
         'torch',
-        'torchvision'
+        'torchvision',
+        'overrides',
         ],
     extras_require={
         "tests": ["pytest"],
