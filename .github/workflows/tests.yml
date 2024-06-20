@@ -19,8 +19,8 @@ jobs:
         run: |
           pip install black==24.4.2 isort==5.13.2 flake8==7.0.0
           black --check mrs_utils tests
-          flake8 --verbose mrs_utils tests
-          isort . --check-only --verbose
+          flake8 --verbose --max-line-length=120 --ignore=E203,W503,E722 --per-file-ignores=*/__init__.py: F401 mrs_utils tests
+          isort . --check-only --verbose --profile black
       - name: Run tests
         run: |
           pip install .[tests]
